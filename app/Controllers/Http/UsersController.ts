@@ -3,6 +3,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import User from 'App/Models/User';
 import UpdateUserValidator from 'App/Validators/UpdateUserValidator';
 import authConfig from 'Config/auth';
+import LoginValidator from 'App/Validators/LoginValidator';
 
 export default class UsersController {
   /**
@@ -64,23 +65,18 @@ export default class UsersController {
 
     // Validate the request data
     try {
-      payload = await request.validate({
-        schema: schema.create({
-          email: schema.string({}, [rules.email()]),
-          password: schema.string({}, [rules.minLength(6)]),
-        }),
-      });
+      payload = await request.validate(LoginValidator);
     } catch (error) {
-      return response.badRequest(error.message);
+      return response.badRequest({ error: error.message });
     }
 
     const { email, password } = payload;
 
     try {
       const token = await auth.use('api').attempt(email, password);
-      return response.ok(token);
+      return response.ok({ token });
     } catch (error) {
-      return response.badRequest({ error: error.message });
+      return response.badRequest({ error: error.responseText });
     }
   }
 
