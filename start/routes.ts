@@ -25,9 +25,9 @@ Route.get('/', async () => {
 })
 
 Route.group(() => {
-  Route.post('/users/register', 'UsersController.register');
-  Route.post('/users/login', 'UsersController.login');
-  Route.get('/users/revoke', 'UsersController.revioke').middleware('auth');
+  Route.post('/auth/register', 'UsersController.register');
+  Route.post('/auth/login', 'UsersController.login');
+  Route.get('/auth/revoke', 'UsersController.revioke').middleware('auth');
   Route.get('/users/me', 'UsersController.me').middleware('auth');
   Route.put('/users/:id', 'UsersController.update').middleware('auth');
 
